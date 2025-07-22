@@ -1,8 +1,7 @@
 import type { Route } from "./+types/home";
 import Navbar from "~/components/Navbar";
 import ResumeCard from "~/components/ResumeCard";
-import { Link, useNavigate } from "react-router";
-import { resumes } from "constants";
+import { resumes } from "../../constants";
 
 export function meta({}: Route.MetaArgs) {
   return [
