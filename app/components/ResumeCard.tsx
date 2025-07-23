@@ -8,27 +8,30 @@ const ResumeCard = ({
 }: {
   resume: Resume;
 }) => {
+  const { fs } = usePuterStore();
+  const [resumeUrl, setResumeUrl] = useState<string | null>(null);
+  const [loading, setLoading] = useState(false);
 
-
-        const { fs } = usePuterStore();
-        const [resumeUrl, setResumeUrl] = useState("null");
-
-
-
-        useEffect(() => {
-          const loadResume = async () => {
-            const blob = await fs.read(imagePath);
-            if (!blob) return;
-
-            let url = URL.createObjectURL(blob);
-
-            setResumeUrl(url);
-          };
-
-          loadResume();
-        }, [imagePath]);
-
-
+  useEffect(() => {
+    let isMounted = true;
+    const loadResume = async () => {
+      setLoading(true);
+      const blob = await fs.read(imagePath);
+      if (!blob) {
+        setLoading(false);
+        return;
+      }
+      let url = URL.createObjectURL(blob);
+      if (isMounted) {
+        setResumeUrl(url);
+        setLoading(false);
+      }
+    };
+    loadResume();
+    return () => {
+      isMounted = false;
+    };
+  }, [imagePath]);
 
   return (
     <Link
@@ -53,12 +56,20 @@ const ResumeCard = ({
       </div>
       {imagePath && (
         <div className="gradient-border animate-in fade-in duration-1000">
-          <div className="w-full h-full">
-            <img
-              src={resumeUrl}
-              alt="resume"
-              className="w-full h-[350px] max-sm:h-[200px] object-cover object-top"
-            />
+          <div className="w-full h-full flex items-center justify-center">
+            {loading || !resumeUrl ? (
+              <img
+                src="/images/load.gif"
+                alt="Loading resume preview"
+                className="w-[60px] h-[350px] max-sm:h-[200px] object-contain"
+              />
+            ) : (
+              <img
+                src={resumeUrl}
+                alt="resume"
+                className="w-full h-[350px] max-sm:h-[200px] object-cover object-top rounded-xl"
+              />
+            )}
           </div>
         </div>
       )}
