@@ -1,5 +1,8 @@
 import { useEffect, useState } from "react";
 import { Link, useNavigate, useParams } from "react-router"
+import ATS from "~/components/ATS";
+import Details from "~/components/Details";
+import Summary from "~/components/Summary";
 import { usePuterStore } from "~/lib/puter";
 
 
@@ -14,7 +17,7 @@ const Resume = () => {
     const { id } = useParams();
     const [imageUrl, setImageUrl] = useState<string | null>(null);
     const [resumeUrl, setResumeUrl] = useState<string | null>(null);
-    const [feedback, setFeedback] = useState<Resume | null>(null);
+    const [feedback, setFeedback] = useState<Feedback | null>(null);
     const navigate = useNavigate();
 
      useEffect(() => {
@@ -65,28 +68,34 @@ const Resume = () => {
       </nav>
 
       <div className="flex flex-row w-full max-lg:flex-col-reverse">
-        <section className="feedback-section bg-[url('/images/bg-small.svg')] bg-cover h-[100vh] sticky top-0 items-center justify-center"> 
-            {imageUrl && resumeUrl && (
-              <div className="animate-in fade-in duration-500 gradient-border max-sm:m-0 h-[90%] max-wxl:h-fit w-fit">
-                <a href={resumeUrl} target="_blank" rel="noopener noreferrer">
-                    <img src={imageUrl} alt="" className="w-full h-full object-contain rounded-2xl" />
-                </a>
-              </div>
-            )}
+        <section className="feedback-section bg-[url('/images/bg-small.svg')] bg-cover h-[100vh] sticky top-0 items-center justify-center">
+          {imageUrl && resumeUrl && (
+            <div className="animate-in fade-in duration-500 gradient-border max-sm:m-0 h-[90%] max-wxl:h-fit w-fit">
+              <a href={resumeUrl} target="_blank" rel="noopener noreferrer">
+                <img
+                  src={imageUrl}
+                  alt=""
+                  className="w-full h-full object-contain rounded-2xl"
+                />
+              </a>
+            </div>
+          )}
         </section>
 
         <section className="feedback-section">
-            <h2 className="text-4xl !text-black font-bold">
-                {feedback ? (
-                    <div className="flex flex-col gap-8 animate-in fade-in duration-1000">
-                        <h3 className="text-2xl !text-black font-bold">Summary ATS Details</h3>
-                    </div>
-                ) : (
-                    <div className="flex flex-col gap-8 animate-in fade-in duration-1000">
-                        <h3 className="text-2xl !text-black font-bold">Summary ATS Details</h3>
-                    </div>
-                )}
-            </h2>
+          <h2 className="text-4xl !text-black font-bold">Resume Review</h2>
+          {feedback ? (
+            <div className="flex flex-col gap-8 animate-in fade-in duration-1000">
+              <Summary feedback={feedback} />
+              <Details feedback={feedback} />
+              <ATS
+                feedback={feedback.ATS.score || 0}
+                suggestions={feedback.ATS.tips || []}
+              />
+            </div>
+          ) : (
+            <img src="/images/resume-scan-2.gif" className="w-full" />
+          )}
         </section>
       </div>
     </main>
