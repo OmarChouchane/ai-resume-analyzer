@@ -88,7 +88,14 @@ const upload = () => {
         ? feedback.message.content
         : feedback.message.content[0].text;
 
-    data.feedback = feedbackText;
+        let feedbackObj;
+        try {
+          feedbackObj = JSON.parse(feedbackText);
+        } catch (e) {
+          feedbackObj = null;
+        }
+
+    data.feedback = feedbackObj;
 
     await kv.set(`resume:${uuid}`, JSON.stringify(data));
 
