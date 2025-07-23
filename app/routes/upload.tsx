@@ -7,17 +7,27 @@ const upload = () => {
 
     const [isProcessing, setIsProcessing] = useState(false);
     const [statusText, setStatusText] = useState('');
+    const [file, setFile] = useState<File | null>(null);
+
+    const handleFileSelect = (file: File | null) => {
+        setFile(file);
+    };
 
     const handleSubmit = (e: FormEvent<HTMLFormElement>) => {
         e.preventDefault();
-        setIsProcessing(true);
-        setStatusText('Analyzing your resume...');
+        const form = e.currentTarget.closest('form');
+        if (!form) return;
+        const formData = new FormData(form);
 
-        // Simulate an API call
-        setTimeout(() => {
-            setIsProcessing(false);
-            setStatusText('Your resume has been analyzed. Check the results!');
-        }, 3000);
+        const companyName = formData.get('company-name') as string;
+        const jobTitle = formData.get('job-title') as string;
+        const jobDescription = formData.get('job-description') as string;
+
+        console.log('Company Name:', companyName);
+        console.log('Job Title:', jobTitle);
+        console.log('Job Description:', jobDescription);
+
+
     };
 
   return (
@@ -79,7 +89,7 @@ const upload = () => {
 
               <div className="form-div">
                 <label htmlFor="uploader">Upload Resume</label>
-                <FileUploader />
+                <FileUploader onFileSelect={handleFileSelect} />
               </div>
               <button className="primary-button" type='submit'>Analyze Resume</button>
             </form>
